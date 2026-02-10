@@ -1,0 +1,30 @@
+[package]
+name = "webio_macros"
+version = "0.4.4-alpha"
+authors = ["Montasir Mirghani <montasir@webio.tech>"]
+edition = "2024"
+description = "Procedural macros for the WebIO ultra-low-latency framework."
+license = "MIT"
+homepage = "https://github.com/dr-montasir/webio_macros"
+repository = "https://github.com/dr-montasir/webio_macros"
+readme = "README.md"
+keywords = ["std", "web", "webio", "async", "proc-macro"]
+categories = ["development-tools::procedural-macro-helpers", "asynchronous"]
+
+exclude = [
+    ".github/**",
+    "examples/**",
+    "tests/**",
+    "Cargo.lock",
+    "dev.md"
+]
+
+[lib]
+name = "webio_macros"
+path = "src/lib.rs"
+proc-macro = true
+
+[dependencies]
+
+[dev-dependencies]
+webio = "0.4.4-alpha"
