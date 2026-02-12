@@ -46,7 +46,7 @@ The `replace!` macro is a versatile tool for substituting `{{key}}` placeholders
 ```rust
 use webio_macros::{replace, html};
 
-let user = "Alice";
+let user = "Ahmed";
 // Using the core replace engine
 let msg = replace!("Hello {{name}}", name = user);
 

@@ -1,6 +1,6 @@
 [package]
 name = "webio_macros"
-version = "0.4.5-alpha"
+version = "0.4.6-alpha"
 authors = ["Montasir Mirghani <montasir@webio.tech>"]
 edition = "2024"
 description = "Procedural macros for the WebIO ultra-low-latency framework."
@@ -25,7 +25,6 @@ path = "src/lib.rs"
 proc-macro = true
 
 [dependencies]
-webio = "0.4.4-alpha"
 
 [dev-dependencies]
-webio = "0.4.4-alpha"
+webio = "0.4.6-alpha"
