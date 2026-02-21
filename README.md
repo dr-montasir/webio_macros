@@ -28,7 +28,7 @@ The flagship macro `#[webio_main]` enables the definition of an application entr
 
 1. **Zero-Dependency Philosophy**: Written using only the built-in `proc_macro` library.
 2. **Boilerplate Reduction**: Automatically handles the transition from synchronous OS threads to the WebIO async world.
-3. **Turbo Performance**: Wraps code in the `webio::launch` engine, maintaining **70µs - 400µs** response times.
+3. **Turbo Performance**: Wraps code in the `webio::block_on` engine, maintaining **70µs - 400µs** response times.
 
 ## ⚡ High-Speed Templates
 

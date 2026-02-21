@@ -23,11 +23,11 @@ use proc_macro::TokenStream;
 /// 
 /// `webio_main` is a procedural macro attribute that transforms an `async fn main()` 
 /// into a standard synchronous `main` function that automatically invokes the 
-/// **WebIO** `launch` engine.
+/// **WebIO** `block_on` engine.
 ///
 /// ### How it works:
 /// The body of the async function is captured and wrapped inside a call to 
-/// `::webio::launch()`. This ensures the code benefits from WebIO's 
+/// `::webio::block_on()`. This ensures the code benefits from WebIO's 
 /// **Safe-Turbo** spin-loop execution (70µs - 400µs latency) without 
 /// manual boilerplate.
 ///
@@ -60,12 +60,12 @@ pub fn webio_main(_attr: TokenStream, item: TokenStream) -> TokenStream {
     };
 
     // Generate a standard synchronous main function alongside a bridge 
-    // that executes a direct call to ::webio::launch.
+    // that executes a direct call to ::webio::block_on.
     let output = format!(
         r#"
         fn main() {{
             let fut = async move {};
-            ::webio::launch(fut);
+            ::webio::block_on(fut);
         }}
         "#,
         body

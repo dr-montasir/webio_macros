@@ -1,6 +1,6 @@
 [package]
 name = "webio_macros"
-version = "0.4.6-alpha"
+version = "0.5.0-alpha"
 authors = ["Montasir Mirghani <montasir@webio.tech>"]
 edition = "2024"
 description = "Procedural macros for the WebIO ultra-low-latency framework."
