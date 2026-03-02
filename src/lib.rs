@@ -206,3 +206,45 @@ pub fn html(input: TokenStream) -> TokenStream {
     // Acts as a semantic alias by proxying input to the core replacement engine.
     replace(input)
 }
+
+/// # WebIO HTTP Client Injection Macro (Optional)
+/// 
+/// `#[http]` injects a `Client` instance named `http` into the function scope.
+///
+/// ### Example: Basic GET
+/// ```rust
+/// use webio_macros::http;
+/// 
+/// #[http]
+/// fn fetch_status() -> Result<String, http::Error> {
+///     // 'http' (variable) is injected, 'http' (path) is the crate
+///     let body = http.get("https://httpbin.org").call()?.into_string()?;
+///     Ok(body)
+/// }
+/// ```
+#[cfg(feature = "http")]
+#[proc_macro_attribute]
+pub fn http(_attr: TokenStream, item: TokenStream) -> TokenStream {
+    let input = item.to_string();
+    let open_brace = match input.find('{') {
+        Some(i) => i,
+        None => return "compile_error!(\"http requires a body block { }\")".parse().unwrap(),
+    };
+
+    let signature = &input[..open_brace];
+    let body = &input[open_brace..];
+
+    // Injects the 'http' instance and sets the namespace for type resolution
+    let output = format!(
+        r#"
+        {} {{
+            let http = ::http::Client::new();
+            {}
+        }}
+        "#,
+        signature,
+        &body[1..body.len() - 1] 
+    );
+
+    output.parse().expect("Failed to parse http macro")
+}

@@ -2,7 +2,25 @@
 
 **Procedural macros for the WebIO ultra-low-latency framework.**
 
-`webio_macros` provides the high-level attribute sugar for the [WebIO](https://crates.io/crates/webio) ecosystem. Its primary goal is to provide a clean developer experience without introducing any external dependencies or runtime overhead.
+`webio_macros` provides high-level attribute sugar for the [WebIO](https://crates.io/crates/webio) ecosystem. Its primary goal is to provide a clean developer experience without introducing any external dependencies or runtime overhead by default.
+
+By acting as a **compile-time bridge**, `webio_macros` allows you to define high-performance I/O operations that remain backend-agnostic. It acts as a compile-time code generator that allows the **WebIO** framework to support high-performance external clients like `http` (powered by `ureq`) with zero boilerplate.
+
+## ⚡ Key Principles
+* **Zero-Cost Abstractions:** Macros generate code that resolves at compile-time, keeping binaries lean.
+* **Minimal Dependency Tree:** Strictly follows a "no-bloat" policy to ensure lightning-fast build times.
+* **Semantic Networking:** The `#[http]` macro clearly distinguishes external API calls from internal WebIO logic.
+
+## 🚀 Features
+
+### 1. HTTP External Client (`#[http]`)
+Injects a high-performance HTTP `Client` instance named `http` directly into your function scope. This is an **optional feature** to keep the core crate dependency-free.
+
+**Setup:**
+```toml
+[dependencies]
+webio_macros = { version = "0.8.0-alpha", features = ["http"] }
+```
 
 ## 🛠 Installation
 
@@ -71,7 +89,7 @@ async fn main() {
             .body(content)
     });
 
-    app.run("127.0.0.1", "8080").await;
+    app.run("127.0.0.1", "8080");
 }
 ```
 

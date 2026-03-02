@@ -1,6 +1,6 @@
 [package]
 name = "webio_macros"
-version = "0.5.0-alpha"
+version = "0.8.0-alpha"
 authors = ["Montasir Mirghani <montasir@webio.tech>"]
 edition = "2024"
 description = "Procedural macros for the WebIO ultra-low-latency framework."
@@ -24,7 +24,12 @@ name = "webio_macros"
 path = "src/lib.rs"
 proc-macro = true
 
+[features]
+default = []
+http = ["dep:http"]
+
 [dependencies]
+http = { package = "ureq", version = "3.2.0", optional = true, features = ["json"] }
 
 [dev-dependencies]
-webio = "0.4.6-alpha"
+webio = "0.8.0-alpha"
