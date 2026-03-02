@@ -8,6 +8,11 @@ By acting as a **compile-time bridge**, `webio_macros` enables the definition of
 
 **Note**: To connect with external **APIs** via **HTTP**, `webio_macros` offers an optional feature that wraps the lightweight ureq crate as `http`. This feature is only included when explicitly enabled, ensuring the core remains dependency-free.
 
+### Setup
+```shell
+cargo add webio_macros --features http
+```
+
 ### Http Usage Example:
 ```rust
 use webio_macros::http;
