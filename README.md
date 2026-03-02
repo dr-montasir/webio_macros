@@ -4,23 +4,34 @@
 
 `webio_macros` provides high-level attribute sugar for the [WebIO](https://crates.io/crates/webio) ecosystem. Its primary goal is to provide a clean developer experience without introducing any external dependencies or runtime overhead by default.
 
-By acting as a **compile-time bridge**, `webio_macros` allows you to define high-performance I/O operations that remain backend-agnostic. It acts as a compile-time code generator that allows the **WebIO** framework to support high-performance external clients like `http` (powered by `ureq`) with zero boilerplate.
+By acting as a **compile-time bridge**, `webio_macros` enables the definition of high-performance I/O operations that remain backend-agnostic. It functions as a compile-time code generator, allowing the **WebIO** framework to support high-performance external clients like `http` (powered by `ureq`) with zero boilerplate.
 
-## ⚡ Key Principles
-* **Zero-Cost Abstractions:** Macros generate code that resolves at compile-time, keeping binaries lean.
-* **Minimal Dependency Tree:** Strictly follows a "no-bloat" policy to ensure lightning-fast build times.
-* **Semantic Networking:** The `#[http]` macro clearly distinguishes external API calls from internal WebIO logic.
+**Note**: To connect with external **APIs** via **HTTP**, `webio_macros` offers an optional feature that wraps the lightweight ureq crate as `http`. This feature is only included when explicitly enabled, ensuring the core remains dependency-free.
 
-## 🚀 Features
+### Http Usage Example:
+```rust
+use webio_macros::http;
+use serde_json;
 
-### 1. HTTP External Client (`#[http]`)
-Injects a high-performance HTTP `Client` instance named `http` directly into your function scope. This is an **optional feature** to keep the core crate dependency-free.
-
-**Setup:**
-```toml
-[dependencies]
-webio_macros = { version = "0.8.0-alpha", features = ["http"] }
+fn example() {
+    // Simple GET request
+    let res = http!(get("https://httpbin.org").call());
+    
+    // POST request with headers and JSON payload
+    let payload = serde_json::json!({ "id": 1 });
+    let res = http! {
+        post("https://httpbin.org")
+            .header("Authorization", "Bearer TOKEN")
+            .send_json(payload)
+    };
+}
 ```
+
+## Key Features
+- **The Entry Point**: `#[webio_main]` transforms async entry points into high-efficiency 
+  execution units managed by the WebIO engine.
+- **Template Engine**: `replace!` and `html!` provide zero-dependency string substitution 
+  at the compilation phase, optimized for raw string literals and web content.
 
 ## 🛠 Installation
 

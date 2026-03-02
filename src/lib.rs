@@ -1,19 +1,3 @@
-//! # WebIO Macros 🦅
-//! 
-//! Procedural macros for the WebIO ecosystem, built with a **zero-dependency philosophy**.
-//! 
-//! ## Why WebIO Macros?
-//! Procedural macros usually rely on heavy crates like `syn` and `quote`. **WebIO Macros** 
-//! strictly utilizes the built-in `proc_macro` library to provide attribute-based 
-//! efficiency and compile-time template transformations without increasing 
-//! compilation overhead or dependency bloat.
-//!
-//! ## Key Features
-//! - **The Entry Point**: `#[webio_main]` transforms async entry points into high-efficiency 
-//!   execution units managed by the WebIO engine.
-//! - **Template Engine**: `replace!` and `html!` provide zero-dependency string substitution 
-//!   at the compilation phase, optimized for raw string literals and web content.
-
 #![doc = include_str!("../README.md")]
 
 extern crate proc_macro;
@@ -207,44 +191,38 @@ pub fn html(input: TokenStream) -> TokenStream {
     replace(input)
 }
 
-/// # WebIO HTTP Client Injection Macro (Optional)
-/// 
-/// `#[http]` injects a `Client` instance named `http` into the function scope.
+/// # WebIO HTTP Macro
 ///
-/// ### Example: Basic GET
+/// Automatically prepends a `ureq::Agent::new_with_defaults()` to any provided call,
+/// allowing you to build HTTP requests using the `ureq` API with a default agent.
+///
+/// **Note:** In `ureq` 3.2.0, use `.header()` instead of `.set()` to add headers.
+///
+/// ### Examples
 /// ```rust
+/// use serde_json;
 /// use webio_macros::http;
-/// 
-/// #[http]
-/// fn fetch_status() -> Result<String, http::Error> {
-///     // 'http' (variable) is injected, 'http' (path) is the crate
-///     let body = http.get("https://httpbin.org").call()?.into_string()?;
-///     Ok(body)
-/// }
+///
+/// // Simple GET request
+/// let res = http!(get("https://httpbin.org").call());
+///
+/// // POST request with headers and JSON payload
+/// let payload = serde_json::json!({ "id": 1 });
+/// let res = http! {
+///     post("https://httpbin.org")
+///         .header("Authorization", "Bearer TOKEN")
+///         .send_json(payload)
+/// };
 /// ```
-#[cfg(feature = "http")]
-#[proc_macro_attribute]
-pub fn http(_attr: TokenStream, item: TokenStream) -> TokenStream {
-    let input = item.to_string();
-    let open_brace = match input.find('{') {
-        Some(i) => i,
-        None => return "compile_error!(\"http requires a body block { }\")".parse().unwrap(),
-    };
+#[proc_macro]
+pub fn http(input: TokenStream) -> TokenStream {
+    let input_str = input.to_string();
 
-    let signature = &input[..open_brace];
-    let body = &input[open_brace..];
-
-    // Injects the 'http' instance and sets the namespace for type resolution
+    // Generate code with ureq::Agent::new_with_defaults()
     let output = format!(
-        r#"
-        {} {{
-            let http = ::http::Client::new();
-            {}
-        }}
-        "#,
-        signature,
-        &body[1..body.len() - 1] 
+        "::ureq::Agent::new_with_defaults().{}",
+        input_str
     );
 
-    output.parse().expect("Failed to parse http macro")
+    output.parse().expect("Failed to parse WebIO http! macro")
 }
