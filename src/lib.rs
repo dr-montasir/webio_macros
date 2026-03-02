@@ -190,39 +190,3 @@ pub fn html(input: TokenStream) -> TokenStream {
     // Acts as a semantic alias by proxying input to the core replacement engine.
     replace(input)
 }
-
-/// # WebIO HTTP Macro
-///
-/// Automatically prepends a `ureq::Agent::new_with_defaults()` to any provided call,
-/// allowing you to build HTTP requests using the `ureq` API with a default agent.
-///
-/// **Note:** In `ureq` 3.2.0, use `.header()` instead of `.set()` to add headers.
-///
-/// ### Examples
-/// ```rust
-/// use serde_json;
-/// use webio_macros::http;
-///
-/// // Simple GET request
-/// let res = http!(get("https://httpbin.org").call());
-///
-/// // POST request with headers and JSON payload
-/// let payload = serde_json::json!({ "id": 1 });
-/// let res = http! {
-///     post("https://httpbin.org")
-///         .header("Authorization", "Bearer TOKEN")
-///         .send_json(payload)
-/// };
-/// ```
-#[proc_macro]
-pub fn http(input: TokenStream) -> TokenStream {
-    let input_str = input.to_string();
-
-    // Generate code with ureq::Agent::new_with_defaults()
-    let output = format!(
-        "::ureq::Agent::new_with_defaults().{}",
-        input_str
-    );
-
-    output.parse().expect("Failed to parse WebIO http! macro")
-}

@@ -2,41 +2,7 @@
 
 **Procedural macros for the WebIO ultra-low-latency framework.**
 
-`webio_macros` provides high-level attribute sugar for the [WebIO](https://crates.io/crates/webio) ecosystem. Its primary goal is to provide a clean developer experience without introducing any external dependencies or runtime overhead by default.
-
-By acting as a **compile-time bridge**, `webio_macros` enables the definition of high-performance I/O operations that remain backend-agnostic. It functions as a compile-time code generator, allowing the **WebIO** framework to support high-performance external clients like `http` (powered by `ureq`) with zero boilerplate.
-
-**Note**: To connect with external **APIs** via **HTTP**, `webio_macros` offers an optional feature that wraps the lightweight ureq crate as `http`. This feature is only included when explicitly enabled, ensuring the core remains dependency-free.
-
-### Setup
-```shell
-cargo add webio_macros --features http
-```
-
-### Http Usage Example:
-```rust
-use webio_macros::http;
-use serde_json;
-
-fn example() {
-    // Simple GET request
-    let res = http!(get("https://httpbin.org").call());
-    
-    // POST request with headers and JSON payload
-    let payload = serde_json::json!({ "id": 1 });
-    let res = http! {
-        post("https://httpbin.org")
-            .header("Authorization", "Bearer TOKEN")
-            .send_json(payload)
-    };
-}
-```
-
-## Key Features
-- **The Entry Point**: `#[webio_main]` transforms async entry points into high-efficiency 
-  execution units managed by the WebIO engine.
-- **Template Engine**: `replace!` and `html!` provide zero-dependency string substitution 
-  at the compilation phase, optimized for raw string literals and web content.
+`webio_macros` provides the high-level attribute sugar for the [WebIO](https://crates.io/crates/webio) ecosystem. Its primary goal is to provide a clean developer experience without introducing any external dependencies or runtime overhead.
 
 ## 🛠 Installation
 
